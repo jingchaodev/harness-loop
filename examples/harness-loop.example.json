@@ -1,0 +1,51 @@
+{
+  "_comment": "Copy to ./harness-loop.json (or ~/.harness-loop/) and edit. Everything optional.",
+
+  "upstream": "https://api.anthropic.com",
+  "bind": "127.0.0.1:8082",
+  "data_dir": "~/.harness-loop",
+
+  "config_block_needle": "# claudeMd\nCodebase and user instructions",
+  "turn_marker": "<channel ",
+
+  "request_class": {
+    "utility_max_messages": 2,
+    "utility_max_tools": 2,
+    "exempt_user_prefixes": [
+      "CRITICAL: Respond with TEXT ONLY",
+      "[SUGGESTION MODE"
+    ]
+  },
+
+  "mechanisms": [
+    {"id": "global_config",  "pattern": "A distinctive phrase from your global config file",
+     "scope": "config_block", "gloss": "global config reached the model"},
+    {"id": "memory_index",   "pattern": "A distinctive line from your memory index",
+     "scope": "config_block", "gloss": "memory index reached the model"},
+    {"id": "hook_injection", "pattern": "[skill-search]",
+     "scope": "turn_start",   "gloss": "your pre-turn hook's output attached to this turn"},
+    {"id": "delivery_tools", "pattern": "your_messaging_tool_name",
+     "scope": "tools",        "gloss": "delivery/messaging tools present"},
+    {"id": "unshipped_feature", "pattern": "[grounding-recall]",
+     "scope": "turn_start",   "gloss": "a feature still in shadow must not ship"}
+  ],
+
+  "rules": [
+    {"id": "R1.config",   "mechanism": "global_config",  "expect": "present",
+     "when": {"class": "main", "bot_session": true}, "gloss": "config compiled into every main-loop request"},
+    {"id": "R2.memory",   "mechanism": "memory_index",   "expect": "present",
+     "when": {"class": "main", "bot_session": true}, "gloss": "memory compiled in"},
+    {"id": "R3.delivery", "mechanism": "delivery_tools", "expect": "present",
+     "when": {"class": "main", "bot_session": true, "min_messages": 3},
+     "gloss": "agent can actually deliver replies"},
+    {"id": "R4.shadow",   "mechanism": "unshipped_feature", "expect": "absent",
+     "gloss": "shadow features stay in shadow"}
+  ],
+
+  "known_issues": {
+    "_example_rule_id": "acknowledged true-positive: explain why, it will be suppressed after first report"
+  },
+
+  "notify_cmd": "examples/notify-stdout.sh",
+  "dispatch_cmd": null
+}

@@ -1,0 +1,9 @@
+# harness-loop cron wiring (adjust paths; avoid :00/:30 for API-hitting jobs)
+# keep the tap alive (restart if the port is dead)
+*/5 * * * *  pgrep -f "harnessloop tap" >/dev/null || (cd /path/to/harness-loop && nohup python3 -m harnessloop tap >> /tmp/harness-tap.log 2>&1 &)
+# hourly: detect new violations -> notify + dispatch
+17 * * * *   cd /path/to/harness-loop && python3 -m harnessloop check
+# daily digest: findings + recent improvements
+47 8 * * *   cd /path/to/harness-loop && python3 -m harnessloop check --digest
+# every 5 min: push new improvements-ledger entries
+*/5 * * * *  cd /path/to/harness-loop && python3 -m harnessloop watch
