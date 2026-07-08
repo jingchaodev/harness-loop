@@ -23,7 +23,7 @@ from __future__ import annotations
 from .model import RequestView
 
 
-def mechanism_presence(view: RequestView, mechanisms: list[dict], cfg: dict) -> dict:
+def _scope_cache(view: RequestView, cfg: dict):
     needle = cfg.get("config_block_needle")
     marker = cfg.get("turn_marker")
     scopes = {}
@@ -40,15 +40,23 @@ def mechanism_presence(view: RequestView, mechanisms: list[dict], cfg: dict) -> 
                 scopes[name] = view.scope_anywhere()
         return scopes[name]
 
+    return scope_text
+
+
+def mechanism_presence(view: RequestView, mechanisms: list[dict], cfg: dict) -> dict:
+    scope_text = _scope_cache(view, cfg)
     return {m["id"]: (m["pattern"] in scope_text(m.get("scope", "anywhere")))
             for m in mechanisms}
 
 
 def check(view: RequestView, cfg: dict) -> list[dict]:
-    """Evaluate all rules against one request. Returns [{rule, ok, gloss, detail}]."""
+    """Evaluate all rules against one request. Returns [{rule, ok, gloss, detail, ...}]."""
     rc = cfg.get("request_class", {})
     req_class = view.request_class(rc)
-    presence = mechanism_presence(view, cfg.get("mechanisms", []), cfg)
+    mechanisms = cfg.get("mechanisms", [])
+    mech_by_id = {m.get("id"): m for m in mechanisms}
+    scope_text = _scope_cache(view, cfg)
+    presence = mechanism_presence(view, mechanisms, cfg)
     marker = cfg.get("turn_marker")
     bot_session = view.turn_start_index(marker) is not None if marker else None
 
@@ -65,15 +73,27 @@ def check(view: RequestView, cfg: dict) -> list[dict]:
         if when.get("mechanism_present") and not presence.get(when["mechanism_present"]):
             continue
         mech = r.get("mechanism")
+        want = (r.get("expect", "present") == "present")
+        expectation = "present" if want else "absent"
         if mech not in presence:
             results.append({"rule": r["id"], "ok": False,
                             "gloss": r.get("gloss", r["id"]),
-                            "detail": f"rule references unknown mechanism '{mech}'"})
+                            "detail": f"rule references unknown mechanism '{mech}'",
+                            "expectation": expectation,
+                            "matched": False,
+                            "mechanism": {"id": mech, "pattern": "", "scope": "anywhere"},
+                            "region": ""})
             continue
+        m = mech_by_id[mech]
         got = presence[mech]
-        want = (r.get("expect", "present") == "present")
+        scope = m.get("scope", "anywhere")
         results.append({"rule": r["id"], "ok": got == want,
                         "gloss": r.get("gloss", r["id"]),
                         "detail": f"{mech} {'present' if got else 'absent'} "
-                                  f"(expected {'present' if want else 'absent'})"})
+                                  f"(expected {expectation})",
+                        "expectation": expectation,
+                        "matched": got,
+                        "mechanism": {"id": mech, "pattern": m.get("pattern", ""),
+                                      "scope": scope},
+                        "region": scope_text(scope)})
     return results

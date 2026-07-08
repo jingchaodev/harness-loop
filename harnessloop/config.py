@@ -41,6 +41,7 @@ DEFAULTS = {
     "notify_cmd": None,                          # shell cmd; message arrives on stdin
     "dispatch_cmd": None,                        # shell cmd on NEW violations; findings JSON on stdin
     "ledger": "improvements.jsonl",              # repair ledger (relative to data_dir)
+    "findings_dir": "./findings",                 # compact failure snapshots from check
 }
 
 

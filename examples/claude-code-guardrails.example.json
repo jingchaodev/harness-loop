@@ -1,0 +1,42 @@
+{
+  "_comment": "Example shape produced by: python3 -m harnessloop init-claude-code. Replace placeholder fingerprints with real lines from ~/.claude/CLAUDE.md and ~/.claude/projects/*/memory/MEMORY.md.",
+  "_note_config_block": "Use scope=config_block for Claude Code loaded-context files. Set config_block_needle to a distinctive header emitted near Claude Code's loaded instructions if you have one; otherwise leave null and verify the fallback against captures.",
+  "_note_hooks": "Hooks fire client-side and are not inherently visible in model requests. Do not assert raw hook config here; prefer canary side-effect checks or a hook-injected distinctive line that should be visible in the request.",
+  "data_dir": "~/.harness-loop",
+  "findings_dir": "./findings",
+  "config_block_needle": null,
+  "turn_marker": null,
+  "mechanisms": [
+    {
+      "id": "claude_code_global_claude_md",
+      "pattern": "PLACEHOLDER distinctive line from ~/.claude/CLAUDE.md",
+      "scope": "config_block",
+      "gloss": "global Claude Code CLAUDE.md reached the model"
+    },
+    {
+      "id": "claude_code_memory_project_name",
+      "pattern": "PLACEHOLDER distinctive line from ~/.claude/projects/project-name/memory/MEMORY.md",
+      "scope": "config_block",
+      "gloss": "project Claude Code memory reached the model"
+    }
+  ],
+  "rules": [
+    {
+      "id": "claude_code.claude_code_global_claude_md.present",
+      "mechanism": "claude_code_global_claude_md",
+      "expect": "present",
+      "when": {"class": "main"},
+      "gloss": "global CLAUDE.md is compiled into every main request"
+    },
+    {
+      "id": "claude_code.claude_code_memory_project_name.present",
+      "mechanism": "claude_code_memory_project_name",
+      "expect": "present",
+      "when": {"class": "main"},
+      "gloss": "project MEMORY.md is compiled into every main request"
+    }
+  ],
+  "known_issues": {},
+  "notify_cmd": null,
+  "dispatch_cmd": null
+}
