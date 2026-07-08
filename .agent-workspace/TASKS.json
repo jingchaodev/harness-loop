@@ -1,0 +1,28 @@
+{
+  "version": 1,
+  "active": "pytest-port",
+  "tasks": [
+    {
+      "id": "pytest-port",
+      "title": "Port harnessloop _selftest into a proper pytest suite",
+      "status": "in_progress",
+      "subtasks": [
+        {
+          "id": "rules-engine",
+          "title": "tests/test_rules.py \u2014 RequestView anchoring + rules.check positive/negative",
+          "status": "done"
+        },
+        {
+          "id": "init-claude-code",
+          "title": "tests/test_init_claude_code.py \u2014 H1 config generation from a fake ~/.claude tree",
+          "status": "todo"
+        },
+        {
+          "id": "failure-snapshots",
+          "title": "tests/test_failure_snapshots.py \u2014 H5 check.scan writes digest-named snapshots only for NEW violations",
+          "status": "todo"
+        }
+      ]
+    }
+  ]
+}
