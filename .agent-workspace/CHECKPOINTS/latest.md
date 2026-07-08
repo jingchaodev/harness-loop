@@ -1,20 +1,18 @@
 # Latest Checkpoint
 
-- Timestamp: 2026-07-08T21:34:06Z
+- Timestamp: 2026-07-08T21:43:18Z
 - Agent: unknown
 - Branch: main
 
 ## Summary
-Adopted agentws handoff protocol. tests/test_rules.py landed: 4 tests covering RequestView anchoring + rules.check positive/negative. pytest-port subtask 'rules-engine' is done.
+Adopted agentws. tests/test_rules.py landed: 4 tests (RequestView anchoring + rules.check pos/neg). pytest-port subtask 'rules-engine' done.
 
 ## Next action
-Write tests/test_init_claude_code.py (H1 config generation from a fake ~/.claude tree) — the next pytest-port subtask.
+Write tests/test_init_claude_code.py (H1 config generation from a fake ~/.claude tree) — next pytest-port subtask.
 
 ## Changed files
 Tracked edits (this task):
-- AGENTS.md
-- CLAUDE.md
-- tests/test_rules.py
+- No tracked edits recorded.
 Untracked (new/scratch):
 - none
 

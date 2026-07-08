@@ -11,13 +11,11 @@ Make harness-loop safely resumable by multiple coding agents.
 pytest-port: Port harnessloop _selftest into a proper pytest suite
 
 ## Current status
-Adopted agentws handoff protocol. tests/test_rules.py landed: 4 tests covering RequestView anchoring + rules.check positive/negative. pytest-port subtask 'rules-engine' is done.
+Adopted agentws. tests/test_rules.py landed: 4 tests (RequestView anchoring + rules.check pos/neg). pytest-port subtask 'rules-engine' done.
 
 ## Recent changes
 Tracked edits (this task):
-- AGENTS.md
-- CLAUDE.md
-- tests/test_rules.py
+- No tracked edits recorded.
 Untracked (new/scratch):
 - none
 
@@ -41,7 +39,7 @@ Each entry should be short: what was decided, why, and when.
 - Last test result: passed
 
 ## Next best action
-Write tests/test_init_claude_code.py (H1 config generation from a fake ~/.claude tree) — the next pytest-port subtask.
+Write tests/test_init_claude_code.py (H1 config generation from a fake ~/.claude tree) — next pytest-port subtask.
 
 ## Blockers / open questions
 - none
